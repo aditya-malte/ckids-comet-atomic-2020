@@ -7,8 +7,8 @@ from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampl
 import json
 from typing import List
 
-# Importing the GPT2 modules from huggingface/transformers
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+# Importing the modules from huggingface/transformers
+from transformers import AutoModel, AutoTokenizer
 
 # Import os for env varibles via Beaker
 import os
@@ -25,7 +25,7 @@ from optparse import OptionParser
 
 device = 'cuda' if cuda.is_available() else 'cpu'
 
-logger = logging.getLogger("gpt2-comet")
+logger = logging.getLogger("t5-comet")
 logging.basicConfig(level=logging.DEBUG)
 
 # logger.info for allenai beaker verification
@@ -46,7 +46,7 @@ def read_jsonl_lines(input_file: str) -> List[dict]:
 
 
 def main():
-    wandb.init(project="gpt2_comet_atomic")
+    wandb.init(project="t5_comet_atomic")
 
     config = wandb.config
     config.TRAIN_BATCH_SIZE = int(os.environ.get("TRAIN_BATCH_SIZE", 2))
@@ -70,12 +70,12 @@ def main():
     np.random.seed(config.SEED)  # numpy random seed
     torch.backends.cudnn.deterministic = True
 
-    model_name = "gpt2" if 'GPT2_MODEL' not in os.environ else os.environ['GPT2_MODEL']
+    model_name = "t5-small" if 'T5_MODEL' not in os.environ else os.environ['T5_MODEL']
 
     try:
-        tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
     except:
-        tokenizer = GPT2Tokenizer.from_pretrained(config.TOKENIZER)
+        tokenizer = AutoTokenizer.from_pretrained(config.TOKENIZER)
 
     tokenizer.add_special_tokens({
         'eos_token': '[EOS]',
@@ -205,7 +205,7 @@ def main():
     val_loader_mini = DataLoader(val_set_mini, **val_params, drop_last=True)
     
     logging.info("Loading model from {}".format(model_name))
-    model = GPT2LMHeadModel.from_pretrained(model_name, use_cdn=False)
+    model = AutoModel.from_pretrained(model_name, use_cdn=False)
     logging.info("Move model to device {}".format(device))
     model = model.to(device)
     model.resize_token_embeddings(len(tokenizer))
