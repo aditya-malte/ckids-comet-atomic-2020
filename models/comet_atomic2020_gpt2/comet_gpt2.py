@@ -172,7 +172,8 @@ def main():
     logger.info(test_dataset.tail_event)
     logger.info(test_dataset.head())
 
-    val_dataset_mini = pd.read_csv(os.environ.get('DEV_DATA_PATH', "../../data/dev.tsv"), encoding='latin-1', sep="\t")
+    val_dataset_mini = pd.read_csv(os.environ.get('DEV_DATA_PATH', "../../data/dev.tsv"), encoding='latin-1', sep="\t", 
+                                  names = ['head_event', 'relation', 'tail_event'])
     if DEBUG:
         val_dataset_mini = val_dataset_mini.head(5)
     val_dataset_mini = val_dataset_mini.sample(n=min(int(val_dataset_mini.size / 3), 100),
