@@ -140,7 +140,7 @@ def main():
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
     train_dataset = pd.read_csv(
-        os.environ.get('TRAIN_DATA_PATH', "../../data/train.tsv", columns = ['head_event', 'relation', 'tail_event']),
+        os.environ.get('TRAIN_DATA_PATH', "../../data/train.tsv"), columns = ['head_event', 'relation', 'tail_event'],
         encoding='latin-1', sep="\t")
     if DEBUG:
         train_dataset = train_dataset.head(NUM_INST)
