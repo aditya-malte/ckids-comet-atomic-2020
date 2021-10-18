@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../../")
+
 # Importing stock libraries
 import numpy as np
 import pandas as pd
@@ -64,7 +67,7 @@ def main():
     config.PRED_FILE = str(os.environ.get("PRED_FILE", ""))
     config.TOP_K = int(os.environ.get("TOP_K", 40))
     config.PRED_BATCH = 64
-    config.TOKENIZER = os.environ.get('TOKENIZER', "gpt2-xl")
+    config.TOKENIZER = os.environ.get('TOKENIZER', "t5-small")
 
     torch.manual_seed(config.SEED)  # pytorch random seed
     np.random.seed(config.SEED)  # numpy random seed
@@ -137,11 +140,11 @@ def main():
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
     train_dataset = pd.read_csv(
-        os.environ.get('TRAIN_DATA_PATH', "/tmp/gpt2data/atomic_train.tsv"),
+        os.environ.get('TRAIN_DATA_PATH', "../../data/train.tsv"),
         encoding='latin-1', sep="\t")
     if DEBUG:
         train_dataset = train_dataset.head(NUM_INST)
-    # train_dataset = train_dataset[['head_event', 'tail_event', 'relation']]
+    train_dataset = train_dataset[['head_event', 'tail_event', 'relation']]
     train_dataset.head_event = train_dataset.head_event + ' ' + train_dataset.relation \
                                + " [GEN]"
     train_dataset.tail_event = train_dataset.tail_event + ' [EOS]'
