@@ -211,7 +211,7 @@ def main():
     val_loader_mini = DataLoader(val_set_mini, **val_params, drop_last=True)
     
     logging.info("Loading model from {}".format(model_name))
-    model = AutoModel.from_pretrained(model_name, use_cdn=False)
+    model = AutoModel.from_pretrained(model_name)
     logging.info("Move model to device {}".format(device))
     model = model.to(device)
     model.resize_token_embeddings(len(tokenizer))
