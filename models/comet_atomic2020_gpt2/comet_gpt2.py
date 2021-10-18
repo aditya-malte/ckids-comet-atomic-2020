@@ -140,18 +140,19 @@ def main():
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
     train_dataset = pd.read_csv(
-        os.environ.get('TRAIN_DATA_PATH', "../../data/train.tsv"),
+        os.environ.get('TRAIN_DATA_PATH', "../../data/train.tsv", columns = ['head_event', 'relation', 'tail_event']),
         encoding='latin-1', sep="\t")
     if DEBUG:
         train_dataset = train_dataset.head(NUM_INST)
-    train_dataset = train_dataset[['head_event', 'tail_event', 'relation']]
+    #train_dataset = train_dataset[['head_event', 'tail_event', 'relation']]
     train_dataset.head_event = train_dataset.head_event + ' ' + train_dataset.relation \
                                + " [GEN]"
     train_dataset.tail_event = train_dataset.tail_event + ' [EOS]'
     logger.info(train_dataset.head())
     logger.info(train_dataset.tail_event)
 
-    val_dataset = pd.read_csv(os.environ.get('DEV_DATA_PATH', "/tmp/gpt2data/atomic_dev.tsv"), encoding='latin-1', sep="\t")
+    val_dataset = pd.read_csv(os.environ.get('DEV_DATA_PATH', "../../data/dev.tsv"), encoding='latin-1', sep="\t",
+                             columns = ['head_event', 'relation', 'tail_event'])
     if DEBUG:
         val_dataset = val_dataset.head(NUM_INST)
     val_dataset = val_dataset[['head_event', 'tail_event', 'relation']]
@@ -160,7 +161,8 @@ def main():
     logger.info(val_dataset.tail_event)
     logger.info(val_dataset.head())
 
-    test_dataset = pd.read_csv(os.environ.get('TEST_DATA_PATH', "/tmp/gpt2data/atomic_test.tsv"), encoding='latin-1', sep="\t")
+    test_dataset = pd.read_csv(os.environ.get('TEST_DATA_PATH', "../../data/test.tsv"), encoding='latin-1', sep="\t",
+                              columns = ['head_event', 'relation', 'tail_event'])
     if DEBUG:
         test_dataset = test_dataset.head(NUM_INST)
     test_dataset = test_dataset[['head_event', 'tail_event', 'relation']]
