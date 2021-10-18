@@ -188,10 +188,10 @@ def main():
     logger.info("DEV Dataset tuple_count: {}".format(val_dataset.shape))
     logger.info("DEV MINI Dataset tuple_count: {}".format(val_dataset_mini.shape))
 
-    training_set = KGDataset(train_dataset, tokenizer, config.OUT_LEN, config.SUMMARY_LEN, model="gpt2")
-    val_set = KGDataset(val_dataset, tokenizer, config.IN_LEN, config.OUT_LEN - config.IN_LEN, model="gpt2", is_eval=True)
-    val_set_mini = KGDataset(val_dataset.head(2000), tokenizer, config.IN_LEN,  config.OUT_LEN - config.IN_LEN, model="gpt2", is_eval=True)
-    test_set = KGDataset(test_dataset, tokenizer, config.IN_LEN,  config.OUT_LEN - config.IN_LEN, model="gpt2", is_eval=True)
+    training_set = KGDataset(train_dataset, tokenizer, config.OUT_LEN, config.SUMMARY_LEN, model="t5")
+    val_set = KGDataset(val_dataset, tokenizer, config.IN_LEN, config.OUT_LEN - config.IN_LEN, model="t5", is_eval=True)
+    val_set_mini = KGDataset(val_dataset.head(2000), tokenizer, config.IN_LEN,  config.OUT_LEN - config.IN_LEN, model="t5", is_eval=True)
+    test_set = KGDataset(test_dataset, tokenizer, config.IN_LEN,  config.OUT_LEN - config.IN_LEN, model="t5", is_eval=True)
 
     train_params = {
         'batch_size': config.TRAIN_BATCH_SIZE,
@@ -224,7 +224,7 @@ def main():
         logger.info('Initiating Fine-Tuning for the model on our dataset')
 
         for epoch in range(config.TRAIN_EPOCHS):
-            train(epoch, tokenizer, model, device, training_loader, optimizer, val_loader_mini, model_class="gpt2")
+            train(epoch, tokenizer, model, device, training_loader, optimizer, val_loader_mini, model_class="t5")
             model.save_pretrained('{}/checkpoint_{}'.format(config.OUT_DIR, epoch))
             tokenizer.save_pretrained('{}/checkpoint_{}'.format(config.OUT_DIR, epoch))
         model.save_pretrained('/models')
@@ -249,7 +249,7 @@ def main():
         logger.info(pred_dataset.tail_event)
         logger.info(pred_dataset.head())
 
-        pred_set = KGDataset(pred_dataset, tokenizer, config.IN_LEN, config.OUT_LEN - config.IN_LEN, model="gpt2", is_eval=True)
+        pred_set = KGDataset(pred_dataset, tokenizer, config.IN_LEN, config.OUT_LEN - config.IN_LEN, model="t5", is_eval=True)
         pred_loader = DataLoader(pred_set, **val_params, drop_last=False)
 
         pred_generations = beam_generations(tokenizer, model, device, pred_loader, top_k=config.TOP_K)
