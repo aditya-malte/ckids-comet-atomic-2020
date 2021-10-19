@@ -11,7 +11,11 @@ import json
 from typing import List
 
 # Importing the modules from huggingface/transformers
-from transformers import AutoModel, AutoTokenizer
+# from transformers import AutoModel, AutoTokenizer
+# from transformers import T5Tokenizer as AutoTokenizer
+# from transformers import T5ForConditionalGeneration as AutoModel
+from transformers import T5Tokenizer as AutoTokenizer   # so the names throughout code don't have to be changed
+from transformers import T5Model as AutoModel           # so the names throughout code don't have to be changed
 
 # Import os for env varibles via Beaker
 import os
