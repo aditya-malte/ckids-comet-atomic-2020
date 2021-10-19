@@ -76,9 +76,9 @@ def main():
     model_name = "t5-small" if 'T5_MODEL' not in os.environ else os.environ['T5_MODEL']
 
     try:
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, truncation=True, padding=True)
     except:
-        tokenizer = AutoTokenizer.from_pretrained(config.TOKENIZER)
+        tokenizer = AutoTokenizer.from_pretrained(config.TOKENIZER, truncation=True, padding=True)
 
     tokenizer.add_special_tokens({
         'eos_token': '[EOS]',
