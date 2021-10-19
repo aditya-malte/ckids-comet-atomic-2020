@@ -60,7 +60,7 @@ def main():
     config.SEED = int(os.environ.get("SEED", 42))
     config.IN_LEN = int(os.environ.get("IN_LEN", 16))
     config.OUT_LEN = int(os.environ.get("OUT_LEN", 34))
-    config.SUMMARY_LEN = 0 # Used for t5
+    config.SUMMARY_LEN = config.OUT_LEN # Used for t5
     config.OUT_DIR = os.environ.get("OUT_DIR", "/models")
     config.DO_TRAIN = os.environ.get("DO_TRAIN", "False") == "True"
     config.DO_PRED = os.environ.get("DO_PRED", "True") == "True"
