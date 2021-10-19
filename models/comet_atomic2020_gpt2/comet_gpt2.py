@@ -11,12 +11,7 @@ import json
 from typing import List
 
 # Importing the modules from huggingface/transformers
-# from transformers import AutoModelWithLMHead, AutoTokenizer
-# from transformers import AutoModel, AutoTokenizer
-# from transformers import T5Tokenizer as AutoTokenizer
-# from transformers import T5ForConditionalGeneration as AutoModel
-from transformers import T5Tokenizer as AutoTokenizer   # so the names throughout code don't have to be changed
-from transformers import T5Model as AutoModel           # so the names throughout code don't have to be changed
+from transformers import AutoModelWithLMHead, AutoTokenizer
 
 # Import os for env varibles via Beaker
 import os
@@ -149,7 +144,7 @@ def main():
         encoding='latin-1', sep="\t")
     if DEBUG:
         train_dataset = train_dataset.head(NUM_INST)
-    #train_dataset = train_dataset[['head_event', 'tail_event', 'relation']]
+    # train_dataset = train_dataset[['head_event', 'tail_event', 'relation']]
     train_dataset.head_event = train_dataset.head_event + ' ' + train_dataset.relation \
                                + " [GEN]"
     train_dataset.tail_event = train_dataset.tail_event + ' [EOS]'

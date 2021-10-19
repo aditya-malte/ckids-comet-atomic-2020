@@ -33,36 +33,27 @@ def train(epoch, tokenizer, model, device, loader, optimizer, val_loader=None, m
         mask = data['source_mask'].to(device, dtype=torch.long)
 
         if model_class == "t5":
-            # outputs = model(input_ids=ids, attention_mask=mask, decoder_input_ids=y_ids,
-            #                 lm_labels=lm_labels)
-            # outputs = model(input_ids=ids, attention_mask=mask, decoder_input_ids=y_ids, labels=lm_labels)
-            outputs = model(input_ids=ids, attention_mask=mask, decoder_input_ids=y_ids)
+            outputs = model(input_ids=ids, attention_mask=mask, decoder_input_ids=y_ids, labels=lm_labels)
         else:
             outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
         loss = outputs[0]
 
         if iteration % 100 == 0:
-            # wandb.log({"Training Loss": loss.item(), "Epoch": epoch,
-            #            "Batches left": batch_count - iteration})
-            wandb.log({"Training Loss": loss.mean().item(), "Epoch": epoch,
+            wandb.log({"Training Loss": loss.item(), "Epoch": epoch,
                        "Batches left": batch_count - iteration})
             batches_left = batch_count - iteration
-            # logger.info(
-            #     f'\nEpoch: {epoch}, Iteration: {iteration}, Loss:  {loss.item()}, Batches left: {batches_left}')
             logger.info(
-                f'\nEpoch: {epoch}, Iteration: {iteration}, Loss:  {loss.mean().item()}, Batches left: {batches_left}')
+                f'\nEpoch: {epoch}, Iteration: {iteration}, Loss:  {loss.item()}, Batches left: {batches_left}')
 
         if iteration % 500 == 0:
-            # logger.info(f'\nEpoch: {epoch}, Loss:  {loss.item()}, BatchesLeft: {batches_left}')
-            logger.info(f'\nEpoch: {epoch}, Loss:  {loss.mean().item()}, BatchesLeft: {batches_left}')
+            logger.info(f'\nEpoch: {epoch}, Loss:  {loss.item()}, BatchesLeft: {batches_left}')
 
         if iteration % 5000 == 0:
             model.save_pretrained(save_dir + "/iter_{}_model".format(iteration))
             tokenizer.save_pretrained(save_dir + "/iter_{}_tokenizer".format(iteration))
 
         optimizer.zero_grad()
-        # loss.backward()       # gives error: grad can be implicitly created only for scalar outputs
-        loss.mean().backward()
+        loss.backward()
         optimizer.step()
 
         if iteration % 100 == 0 and val_loader != None:
