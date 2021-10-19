@@ -52,11 +52,11 @@ def main():
     wandb.init(project="t5_comet_atomic")
 
     config = wandb.config
-    config.TRAIN_BATCH_SIZE = int(os.environ.get("TRAIN_BATCH_SIZE", 2))
-    config.VALID_BATCH_SIZE = int(os.environ.get("VALID_BATCH_SIZE", 2))
+    config.TRAIN_BATCH_SIZE = int(os.environ.get("TRAIN_BATCH_SIZE", 8))
+    config.VALID_BATCH_SIZE = int(os.environ.get("VALID_BATCH_SIZE", 8))
     config.TRAIN_EPOCHS = int(os.environ.get("TRAIN_EPOCHS", 3))
     config.VAL_EPOCHS = int(os.environ.get("VAL_EPOCHS", 1))
-    config.LEARNING_RATE = float(os.environ.get("LEARNING_RATE", "1e-5"))
+    config.LEARNING_RATE = float(os.environ.get("LEARNING_RATE", "5e-5"))
     config.SEED = int(os.environ.get("SEED", 42))
     config.IN_LEN = int(os.environ.get("IN_LEN", 16))
     config.OUT_LEN = int(os.environ.get("OUT_LEN", 34))
