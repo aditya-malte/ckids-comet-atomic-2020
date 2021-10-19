@@ -11,6 +11,7 @@ import json
 from typing import List
 
 # Importing the modules from huggingface/transformers
+# from transformers import AutoModelWithLMHead, AutoTokenizer
 # from transformers import AutoModel, AutoTokenizer
 # from transformers import T5Tokenizer as AutoTokenizer
 # from transformers import T5ForConditionalGeneration as AutoModel
@@ -64,7 +65,7 @@ def main():
     config.SEED = int(os.environ.get("SEED", 42))
     config.IN_LEN = int(os.environ.get("IN_LEN", 16))
     config.OUT_LEN = int(os.environ.get("OUT_LEN", 34))
-    config.SUMMARY_LEN = 0 # Used for t5
+    config.SUMMARY_LEN = config.OUT_LEN # Used for t5
     config.OUT_DIR = os.environ.get("OUT_DIR", "/models")
     config.DO_TRAIN = os.environ.get("DO_TRAIN", "False") == "True"
     config.DO_PRED = os.environ.get("DO_PRED", "True") == "True"
@@ -80,9 +81,9 @@ def main():
     model_name = "t5-small" if 'T5_MODEL' not in os.environ else os.environ['T5_MODEL']
 
     try:
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, truncation=True, padding=True)
     except:
-        tokenizer = AutoTokenizer.from_pretrained(config.TOKENIZER)
+        tokenizer = AutoTokenizer.from_pretrained(config.TOKENIZER, truncation=True, padding=True)
 
     tokenizer.add_special_tokens({
         'eos_token': '[EOS]',
@@ -215,7 +216,7 @@ def main():
     val_loader_mini = DataLoader(val_set_mini, **val_params, drop_last=True)
     
     logging.info("Loading model from {}".format(model_name))
-    model = AutoModel.from_pretrained(model_name)
+    model = AutoModelWithLMHead.from_pretrained(model_name)
     logging.info("Move model to device {}".format(device))
     model = model.to(device)
     model.resize_token_embeddings(len(tokenizer))
