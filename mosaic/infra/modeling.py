@@ -34,7 +34,7 @@ def train(epoch, tokenizer, model, device, loader, optimizer, val_loader=None, m
 
         if model_class == "t5":
             outputs = model(input_ids=ids, attention_mask=mask, decoder_input_ids=y_ids,
-                            lm_labels=lm_labels)
+                            labels=lm_labels)
         else:
             outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
         loss = outputs[0]
