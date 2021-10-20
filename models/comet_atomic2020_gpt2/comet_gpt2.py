@@ -141,7 +141,7 @@ def main():
 
     train_dataset = pd.read_csv(
         os.environ.get('TRAIN_DATA_PATH', "../../data/train.tsv"), names = ['head_event', 'relation', 'tail_event'],
-        encoding='latin-1', sep="\t")
+        encoding='latin-1', sep="\t").sample(frac=1).sample(frac=1)
     if DEBUG:
         train_dataset = train_dataset.head(NUM_INST)
     # train_dataset = train_dataset[['head_event', 'tail_event', 'relation']]
