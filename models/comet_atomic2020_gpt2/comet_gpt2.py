@@ -144,7 +144,7 @@ def main():
         encoding='latin-1', sep="\t").sample(frac=1).sample(frac=1)
     
     # take random sample of rows to test training in Google Colab
-    train_dataset = train_dataset.sample(n=1000)
+    train_dataset = train_dataset.sample(n=1000).reset_index(drop=True)
 
     if DEBUG:
         train_dataset = train_dataset.head(NUM_INST)
