@@ -61,7 +61,7 @@ def main():
     config.IN_LEN = int(os.environ.get("IN_LEN", 16))
     config.OUT_LEN = int(os.environ.get("OUT_LEN", 34))
     config.SUMMARY_LEN = config.OUT_LEN # Used for t5
-    config.OUT_DIR = os.environ.get("OUT_DIR", "/models")
+    config.OUT_DIR = os.environ.get("OUT_DIR", "./model_files")
     config.DO_TRAIN = os.environ.get("DO_TRAIN", "False") == "True"
     config.DO_PRED = os.environ.get("DO_PRED", "True") == "True"
     config.PRED_FILE = str(os.environ.get("PRED_FILE", ""))
@@ -231,7 +231,7 @@ def main():
             train(epoch, tokenizer, model, device, training_loader, optimizer, val_loader_mini, model_class="t5")
             model.save_pretrained('{}/checkpoint_{}'.format(config.OUT_DIR, epoch))
             tokenizer.save_pretrained('{}/checkpoint_{}'.format(config.OUT_DIR, epoch))
-        model.save_pretrained('/models')
+        model.save_pretrained(config.OUT_DIR)
 
     if config.DO_PRED:
 
@@ -261,8 +261,8 @@ def main():
                     [json.dumps(r) for r in pred_generations])
 
         # Resave the model to keep generations and model associated
-        model.save_pretrained('/models')
-        tokenizer.save_pretrained('/models')
+        model.save_pretrained(config.OUT_DIR)
+        tokenizer.save_pretrained(config.OUT_DIR)
 
 if __name__ == '__main__':
     parser = OptionParser()
