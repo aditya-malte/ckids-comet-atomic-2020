@@ -5,7 +5,7 @@ from os.path import join
 FILE_PATH = "/data/malte/kgtk_conceptnet.tsv"
 DATA_DIR = "/nas/home/malte/ckids-comet-atomic-2020/data"
 
-data = pd.read_csv(FILE_PATH, sep="\t")[["node1;label", "relation;label", "node2;label"]]
+data = (pd.read_csv(FILE_PATH, sep="\t")[["node1;label", "relation;label", "node2;label"]]).dropna()
 train, dev, test = np.split(data.sample(frac=1, random_state=42).sample(frac=1, random_state=42), 
                        [int(.8*len(data)), int(.1*len(data))])
 
