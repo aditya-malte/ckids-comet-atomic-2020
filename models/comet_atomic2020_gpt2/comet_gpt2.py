@@ -143,9 +143,6 @@ def main():
         os.environ.get('TRAIN_DATA_PATH', "../../data/train.tsv"), names = ['head_event', 'relation', 'tail_event'],
         encoding='latin-1', sep="\t").sample(frac=1).sample(frac=1)
     
-    # take random sample of rows to test training in Google Colab
-    train_dataset = train_dataset.sample(n=1000).reset_index(drop=True)
-
     if DEBUG:
         train_dataset = train_dataset.head(NUM_INST)
     # train_dataset = train_dataset[['head_event', 'tail_event', 'relation']]
