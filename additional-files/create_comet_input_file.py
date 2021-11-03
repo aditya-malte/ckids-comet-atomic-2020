@@ -5,7 +5,7 @@ import csv
 # KG = 'conceptnet'
 KG = 'atomic'
 # KG = 'wikidata'
-DATA_PATH = '../data/'
+DATA_PATH = "/nas/home/malte/ckids-comet-atomic-2020/data/"
 
 def get_data(file_name):
     return pd.read_csv(DATA_PATH + file_name, names = ['head_event', 'relation', 'tail_event'], encoding='latin-1', sep="\t")
@@ -175,7 +175,7 @@ def create_input_list(head_events, relations):
 
 def create_input_file(head_events, relations):
     num_lines = 0
-    with open('./' + KG + '_comet_input_file.tsv', 'w+') as tsv_file:
+    with open(DATA_PATH + KG + '_comet_input_file.tsv', 'w+') as tsv_file:
         tsv_writer = csv.writer(tsv_file, delimiter="\t")
         for relation in relations:
             for head_event in head_events:
