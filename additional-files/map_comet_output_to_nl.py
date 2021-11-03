@@ -1,5 +1,7 @@
 import pandas as pd
 
+# NOTE: updates happen in T5 branch. As of 11/3, this might no longer be up to date.
+
 # This file maps output from Comet into NL to be used in regard + sentiment classifiers
 
 # set KG from which to use relations

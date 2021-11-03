@@ -1,6 +1,8 @@
 import pandas as pd
 import csv
 
+# NOTE: updates happen in T5 branch. As of 11/3, this might no longer be up to date.
+
 # This file creates a tsv file for which to make Comet predictions.
 # Keywords taken from Nina's analysis, relations taken from particular KG.
 
