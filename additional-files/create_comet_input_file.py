@@ -1,10 +1,13 @@
 import pandas as pd
 import csv
 
+# This file creates a tsv file for which to make Comet predictions.
+# Keywords taken from Nina's analysis, relations taken from particular KG.
+
 # set KG from which to use relations
 # KG = 'conceptnet'
-KG = 'atomic'
-# KG = 'wikidata'
+# KG = 'atomic'
+KG = 'wikidata'
 DATA_PATH = '../data/'
 
 def get_data(file_name):
@@ -129,6 +132,11 @@ def get_atomic_relations():
     'AtLocation', 'ObjectUse', 'Desires', 'HasProperty', 'NotDesires', 'Causes', 'HasSubEvent', 
     'xReason', 'CapableOf', 'MadeUpOf', 'isAfter', 'isBefore', 'isFilledBy', 'HinderedBy']
 
+# relations include relations from 'relation' column that are also in Nina's ConceptNet relations
+def get_wikidata_relations():
+    return ['/r/IsA', '/r/RelatedTo', '/r/UsedFor', '/r/PartOf', '/r/MadeOf', '/r/HasProperty', '/r/Causes', 
+    '/r/CreatedBy', '/r/HasPrerequisite']
+
 # these relations and NL equivalents are taken from Nina's work
 def get_conceptnet_relations_to_text():
     return {'DefinedAs': 'is defined as ',
@@ -216,6 +224,8 @@ if __name__ == '__main__':
         relations = get_atomic_relations()
     elif KG == 'conceptnet':
         relations = list(get_conceptnet_relations_to_text().keys())
+    elif KG == 'wikidata':
+        relations = get_wikidata_relations()
     
     print(relations)
     print("length of unique relations:", len(relations))
