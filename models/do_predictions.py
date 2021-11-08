@@ -3,7 +3,7 @@ import pandas as pd
 import csv
 
 model_path = "/nas/home/malte/ckids-comet-atomic-2020/models/comet_atomic2020_gpt2/model_files/checkpoint_0"
-input_file_path = "/nas/home/malte/ckids-comet-atomic-2020/data/test-file.tsv"
+input_file_path = "/nas/home/malte/ckids-comet-atomic-2020/data/conceptnet_comet_input_file.tsv"
 output_file_path = "/nas/home/malte/ckids-comet-atomic-2020/data/conceptnet_comet_output_file.tsv"
 
 # get model and tokenizer set up
@@ -19,5 +19,8 @@ with open(output_file_path, 'w+') as output_file:
     tsv_writer = csv.writer(output_file, delimiter="\t")
     for index, row in input_file.iterrows():
         input_str = row['head_event'] + ' ' + row['relation']
-        pred = text2text_generator(input_str)[0]['generated_text'].replace('<pad>', '')
+        pred = text2text_generator(input_str)[0]['generated_text']
+        pred = pred.replace('<pad>', '')
+        pred = pred.replace('<extra_id_0>', '')
+        pred = pred.replace('</s>', '')
         tsv_writer.writerow([row['head_event'], row['relation'], pred])
