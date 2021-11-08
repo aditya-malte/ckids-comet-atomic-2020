@@ -2,8 +2,8 @@ import pandas as pd
 import csv
 
 # set KG from which to use relations
-# KG = 'conceptnet'
-KG = 'atomic'
+KG = 'conceptnet'
+# KG = 'atomic'
 # KG = 'wikidata'
 DATA_PATH = "/nas/home/malte/ckids-comet-atomic-2020/data/"
 
@@ -129,6 +129,16 @@ def get_atomic_relations():
     'AtLocation', 'ObjectUse', 'Desires', 'HasProperty', 'NotDesires', 'Causes', 'HasSubEvent', 
     'xReason', 'CapableOf', 'MadeUpOf', 'isAfter', 'isBefore', 'isFilledBy', 'HinderedBy']
 
+# these relations are taken from the relation;label column in the file Filip shared (kgtk_conceptnet.tsv)
+def get_conceptnet_relations():
+    return ['antonym', 'at location', 'capable of', 'causes', 'causes desire', 'created by', 'defined as', 
+    'derived from', 'desires', 'distinct from', 'entails', 'etymologically derived from', 
+    'etymologically related to', 'form of', 'has a', 'has context', 'has first subevent', 'has last subevent', 
+    'has prerequisite', 'has property', 'has subevent', 'instance of', 'is a', 'located near', 'made of', 
+    'manner of', 'motivated by goal', 'not capable of', 'not desires', 'not has property', 'part of', 'receives action', 
+    'related to', 'similar to', 'symbol of', 'synonym', 'used for', 'capital', 'field', 'genre', 'genus', 
+    'influenced by', 'known for', 'language', 'leader', 'occupation', 'product']
+
 # these relations and NL equivalents are taken from Nina's work
 def get_conceptnet_relations_to_text():
     return {'DefinedAs': 'is defined as ',
@@ -215,7 +225,7 @@ if __name__ == '__main__':
     if KG == 'atomic': 
         relations = get_atomic_relations()
     elif KG == 'conceptnet':
-        relations = list(get_conceptnet_relations_to_text().keys())
+        relations = get_conceptnet_relations()
     
     print(relations)
     print("length of unique relations:", len(relations))
