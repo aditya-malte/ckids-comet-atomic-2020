@@ -238,7 +238,9 @@ def main():
             pred_dataset = pred_dataset.rename(columns={"head": "head_event", "tails": "tail_event"})
             pred_dataset = pred_dataset.explode('tail_event')
         else:
-            pred_dataset = pd.read_csv(config.PRED_FILE, encoding='latin-1', sep="\t")
+            pred_dataset = pd.read_csv(config.PRED_FILE, names = ['head_event', 'relation', 'tail_event'], encoding='latin-1', sep="\t")
+            print("columns:", pred_dataset.columns)
+            print(pred_dataset.head(10))
 
         if DEBUG:
             pred_dataset = pred_dataset.head(NUM_INST)
@@ -252,6 +254,10 @@ def main():
 
         pred_set = KGDataset(pred_dataset, tokenizer, config.IN_LEN, config.OUT_LEN - config.IN_LEN, model="t5", is_eval=True)
         pred_loader = DataLoader(pred_set, **val_params, drop_last=False)
+
+        # # manually get trained model
+        # path = "/nas/home/malte/ckids-comet-atomic-2020/models/comet_atomic2020_gpt2/model_files/checkpoint_0"
+        # model = AutoModelWithLMHead.from_pretrained(path)
 
         pred_generations = beam_generations(tokenizer, model, device, pred_loader, top_k=config.TOP_K)
         write_items(os.path.join(config.OUT_DIR, "pred_generations.jsonl"),
