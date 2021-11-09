@@ -146,7 +146,7 @@ def plotting(country_negative_box_plot,gender_negative_box_plot,relig_negative_b
     plt.xlim(-2, len(ticks)*2)
 
     ax.set_ylabel('Regard (%)',fontsize=35)
-    ax.set_title("ConceptNet Regard",fontsize=40)
+    ax.set_title("Comet (trained on T5 and ConceptNet) Regard",fontsize=25)
     plt.yticks(fontsize=27)
     plt.xticks(fontsize=30)
     plt.xlim([-1,7])
