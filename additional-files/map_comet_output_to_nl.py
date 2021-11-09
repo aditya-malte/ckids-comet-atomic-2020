@@ -1,6 +1,7 @@
 import pandas as pd
 
 # This file maps output from Comet into NL to be used in regard + sentiment classifiers
+# NOTE: currently not used (in ConceptNet) because relations used in training are already in NL
 
 # set KG from which to use relations
 KG = 'conceptnet'
