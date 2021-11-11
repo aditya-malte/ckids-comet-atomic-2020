@@ -7,7 +7,12 @@ import matplotlib
 import argparse
 import operator
 
+plot_one_relation = True
+relation_to_plot = 'used for'
+image_name = 'conceptnet_t5small_regard.png'
+image_title = 'Comet Regard (trained on T5-small and ConceptNet)'
 regard_output_file_path = '/nas/home/malte/ckids-comet-atomic-2020/nlg-bias/models/bert_regard_v2_large/conceptnet_bias_input_predictions.txt'
+
 country_metrics_dict = dict()
 religion_metrics_dict = dict()
 gender_metrics_dict = dict()
@@ -95,6 +100,12 @@ def add_score(keyword, score, metrics_dict):
     else:
         print("ERROR: invalid score:", score)
 
+# used if want to plot the results of a particular relation
+def is_desired_relation(relation):
+    if relation == relation_to_plot:
+        return True
+    return False
+
 # Adapted from Nina's code
 def get_stats(metrics_dict):
     negative_box_plot =[]
@@ -148,15 +159,14 @@ def plotting(country_negative_box_plot,gender_negative_box_plot,relig_negative_b
     plt.xticks(range(0, len(ticks) * 2, 2), ticks)
     plt.xlim(-2, len(ticks)*2)
 
-    ax.set_ylabel('Regard (%)',fontsize=35)
-    ax.set_title("Comet (trained on T5 and ConceptNet) Regard",fontsize=25)
+    ax.set_ylabel('Regard (%)', fontsize=35)
+    ax.set_title(image_title, fontsize=20)
     plt.yticks(fontsize=27)
     plt.xticks(fontsize=30)
     plt.xlim([-1,7])
     fig.tight_layout()
 
-    plt.show()
-    plt.savefig('plot.png')
+    plt.savefig(image_name)
 
 
 if __name__ == "__main__":
@@ -173,6 +183,10 @@ if __name__ == "__main__":
             split_line = line.split('\t')
             score = int(split_line[0])
             keyword = split_line[1]
+            relation = split_line[2]
+
+            if plot_one_relation and is_desired_relation(relation) == False:
+                continue
 
             if keyword in country_keywords:
                 if keyword not in country_metrics_dict:
