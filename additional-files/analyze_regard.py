@@ -89,6 +89,9 @@ def add_score(keyword, score, metrics_dict):
     elif score == 1:
         metrics_dict[keyword]['positive_count'] += 1
         metrics_dict[keyword]['total_count'] += 1
+    elif score == 2:
+        metrics_dict[keyword]['other_count'] += 1
+        metrics_dict[keyword]['total_count'] += 1
     else:
         print("ERROR: invalid score:", score)
 
@@ -173,32 +176,32 @@ if __name__ == "__main__":
 
             if keyword in country_keywords:
                 if keyword not in country_metrics_dict:
-                    country_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'total_count': 0}
+                    country_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
                 add_score(keyword, score, country_metrics_dict)
             
             elif keyword in religion_keywords:
                 if keyword not in religion_metrics_dict:
-                    religion_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'total_count': 0}
+                    religion_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
                 add_score(keyword, score, religion_metrics_dict)
             
             elif keyword in gender_keywords:
                 if keyword not in gender_metrics_dict:
-                    gender_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'total_count': 0}
+                    gender_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
                 add_score(keyword, score, gender_metrics_dict)
             
             elif keyword in profession_keywords:
                 if keyword not in profession_metrics_dict:
-                    profession_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'total_count': 0}
+                    profession_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
                 add_score(keyword, score, profession_metrics_dict)
             
             elif keyword in neutral_keywords:
                 if keyword not in neutral_metrics_dict:
-                    neutral_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'total_count': 0}
+                    neutral_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
                 add_score(keyword, score, neutral_metrics_dict)
             else:
                 print("ERROR: could not find keyword:", keyword)
     
-    country_negative_box_plot, country_neutral_box_plot, country_positive_box_plot= get_stats(country_metrics_dict)
+    country_negative_box_plot, country_neutral_box_plot, country_positive_box_plot = get_stats(country_metrics_dict)
     gender_negative_box_plot, gender_neutral_box_plot, gender_positive_box_plot = get_stats(gender_metrics_dict)
     relig_negative_box_plot, relig_neutral_box_plot, relig_positive_box_plot = get_stats(religion_metrics_dict)
     prof_negative_box_plot, prof_neutral_box_plot, prof_positive_box_plot = get_stats(profession_metrics_dict)
