@@ -82,6 +82,45 @@ def get_conceptnet_relations():
     'related to', 'similar to', 'symbol of', 'synonym', 'used for', 'capital', 'field', 'genre', 'genus', 
     'influenced by', 'known for', 'language', 'leader', 'occupation', 'product']
 
+# these relations are taken from the relation;label column in the file Filip shared (kgtk_conceptnet.tsv)
+# but, only include those that are also present in Nina's set
+def get_conceptnet_relations_filtered():
+    return ['at location', 'capable of', 'causes', 'causes desire', 'created by', 'defined as', 
+    'desires', 'has a', 'has first subevent', 'has last subevent', 
+    'has prerequisite', 'has property', 'has subevent', 'instance of', 'is a', 'located near', 'made of', 
+    'motivated by goal', 'not capable of', 'not desires', 'not has property', 'part of', 'receives action', 
+    'related to', 'symbol of', 'used for']
+
+# relations are taken from intersection of Filip's file and Nina's relations
+# NL mappings are taken from Nina's mapping
+def get_conceptnet_relations_filtered_to_text():
+    return {'at location': 'is located at',
+    'capable of': 'is capable of',
+    'causes': 'causes',
+    'causes desire': 'causes the desire to',
+    'created by': 'is created by',
+    'defined as': 'is defined as',
+    'desires': 'desires',
+    'has a': 'has a',
+    'has first subevent': 'starts with',
+    'has last subevent': 'ends with',
+    'has prerequisite': 'requires',
+    'has property': 'has the property',
+    'has subevent': 'requires',
+    'instance of': 'is an instance of',
+    'is a': 'is a',
+    'located near': 'is located near',
+    'made of': 'is made of', 
+    'motivated by goal': 'is motivated by',
+    'not capable of': 'is not capable of',
+    'not desires': 'does not desire',
+    'not has property': 'does not have the property',
+    'part of': 'is part of',
+    'receives action': 'receives action of',
+    'related to': 'is related to',
+    'symbol of': 'is a symbol of',
+    'used for': 'is used for'}
+
 # these relations and NL equivalents are taken from Nina's work
 def get_conceptnet_relations_to_text():
     return {'DefinedAs': 'is defined as ',
@@ -142,17 +181,17 @@ if __name__ == '__main__':
 
     # get keywords (same for all KGs)
     keywords = get_keywords()
-    country_keywords = get_country_keywords()
-    relig_keywords = get_relig_keywords()
-    gender_keywords = get_gender_keywords()
-    profession_keywords = get_profession_keywords()
+    # country_keywords = get_country_keywords()
+    # relig_keywords = get_relig_keywords()
+    # gender_keywords = get_gender_keywords()
+    # profession_keywords = get_profession_keywords()
 
-    print("length all keywords:", len(keywords))
-    print("length country keywords:", len(country_keywords))
-    print("length religion keywords:", len(relig_keywords))
-    print("length gender keywords:", len(gender_keywords))
-    print("length profession keywords:", len(profession_keywords))
-    print()
+    # print("length all keywords:", len(keywords))
+    # print("length country keywords:", len(country_keywords))
+    # print("length religion keywords:", len(relig_keywords))
+    # print("length gender keywords:", len(gender_keywords))
+    # print("length profession keywords:", len(profession_keywords))
+    # print()
 
     # # load train, dev, and test data (if necessary)
     # train = get_data('train.tsv')
@@ -165,13 +204,21 @@ if __name__ == '__main__':
     # print("length all data:", len(all_data))
     # print()
 
+    relations_unfiltered = get_conceptnet_relations()
+    relations_filtered = get_conceptnet_relations_filtered()
+    to_remove = list(set(relations_unfiltered) - set(relations_filtered))
+    print("Unfiltered - filtered ConceptNet relations:", to_remove)
+    print("Sum of what we remove and what we keep (exp: 47):", len(to_remove) + len(relations_filtered))
+    print()
+
     if KG == 'atomic': 
         relations = get_atomic_relations()
     elif KG == 'conceptnet':
-        relations = get_conceptnet_relations()
+        relations = get_conceptnet_relations_filtered()
     
+    print("Relations:")
     print(relations)
-    print("length of unique relations:", len(relations))
+    print("Number of relations:", len(relations))
     print()
 
     # # test input_list (see what file would look like without creating it)
@@ -180,5 +227,5 @@ if __name__ == '__main__':
     # print()
     # print("length of input_list:", len(input_list))
 
-    # create comet input file
-    create_input_file(get_keywords(), relations)
+    # # create comet input file
+    # create_input_file(get_keywords(), relations)
