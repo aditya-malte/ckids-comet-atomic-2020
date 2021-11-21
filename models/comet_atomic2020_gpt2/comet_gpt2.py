@@ -7,6 +7,7 @@ import pandas as pd
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
+from accelerate import Accelerator
 import json
 from typing import List
 
@@ -26,7 +27,8 @@ from split.utils import write_items
 
 from optparse import OptionParser
 
-device = 'cuda' if cuda.is_available() else 'cpu'
+accelerator = Accelerator()
+device = accelerator.device
 
 logger = logging.getLogger("t5-comet")
 logging.basicConfig(level=logging.DEBUG)
@@ -218,17 +220,18 @@ def main():
     model.resize_token_embeddings(len(tokenizer))
 
     optimizer = torch.optim.AdamW(params=model.parameters(), lr=config.LEARNING_RATE)
-
+    model, optimizer, training_loader, val_loader, test_loader = accelerator.prepare(model, optimizer, training_loader, val_loader, test_loader)
     wandb.watch(model, log="all")
+
 
     if config.DO_TRAIN:
         logger.info('Initiating Fine-Tuning for the model on our dataset')
 
         for epoch in range(config.TRAIN_EPOCHS):
-            train(epoch, tokenizer, model, device, training_loader, optimizer, val_loader_mini, model_class="t5")
-            model.save_pretrained('{}/checkpoint_{}'.format(config.OUT_DIR, epoch))
+            train(epoch, tokenizer, model, device, training_loader, optimizer, val_loader_mini, model_class="t5", accelerator=accelerator)
+            model.module.save_pretrained('{}/checkpoint_{}'.format(config.OUT_DIR, epoch))
             tokenizer.save_pretrained('{}/checkpoint_{}'.format(config.OUT_DIR, epoch))
-        model.save_pretrained(config.OUT_DIR)
+        model.module.save_pretrained(config.OUT_DIR)
 
     if config.DO_PRED:
 
@@ -264,7 +267,7 @@ def main():
                     [json.dumps(r) for r in pred_generations])
 
         # Resave the model to keep generations and model associated
-        model.save_pretrained(config.OUT_DIR)
+        model.module.save_pretrained(config.OUT_DIR)
         tokenizer.save_pretrained(config.OUT_DIR)
 
 if __name__ == '__main__':
