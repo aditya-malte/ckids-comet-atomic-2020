@@ -56,7 +56,7 @@ def main():
     config.VALID_BATCH_SIZE = int(os.environ.get("VALID_BATCH_SIZE", 8))
     config.TRAIN_EPOCHS = int(os.environ.get("TRAIN_EPOCHS", 3))
     config.VAL_EPOCHS = int(os.environ.get("VAL_EPOCHS", 1))
-    config.LEARNING_RATE = float(os.environ.get("LEARNING_RATE", "5e-5"))
+    config.LEARNING_RATE = float(os.environ.get("LEARNING_RATE", "1e-4"))
     config.SEED = int(os.environ.get("SEED", 42))
     config.IN_LEN = int(os.environ.get("IN_LEN", 16))
     config.OUT_LEN = int(os.environ.get("OUT_LEN", 34))
@@ -67,14 +67,14 @@ def main():
     config.PRED_FILE = str(os.environ.get("PRED_FILE", ""))
     config.TOP_K = int(os.environ.get("TOP_K", 40))
     config.PRED_BATCH = 64
-    config.TOKENIZER = os.environ.get('TOKENIZER', "t5-small")
+    config.MODEL_NAME = os.environ.get('MODEL_NAME', "t5-small")
+    config.TOKENIZER = os.environ.get('TOKENIZER', config.MODEL_NAME)
 
     torch.manual_seed(config.SEED)  # pytorch random seed
     np.random.seed(config.SEED)  # numpy random seed
     torch.backends.cudnn.deterministic = True
 
-    model_name = "t5-small" if 'T5_MODEL' not in os.environ else os.environ['T5_MODEL']
-
+    model_name = config.MODEL_NAME
     try:
         tokenizer = AutoTokenizer.from_pretrained(model_name, truncation=True, padding=True)
     except:
@@ -217,7 +217,7 @@ def main():
     model = model.to(device)
     model.resize_token_embeddings(len(tokenizer))
 
-    optimizer = torch.optim.Adam(params=model.parameters(), lr=config.LEARNING_RATE)
+    optimizer = torch.optim.AdamW(params=model.parameters(), lr=config.LEARNING_RATE)
 
     wandb.watch(model, log="all")
 
