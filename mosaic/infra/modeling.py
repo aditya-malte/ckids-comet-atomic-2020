@@ -21,7 +21,7 @@ from mosaic.infra.logging import log_eval
 
 
 def train(epoch, tokenizer, model, device, loader, optimizer, val_loader=None, model_class="t5",
-          save_dir="."):
+          save_dir=".", accelerator=None):
     model.train()
     batch_count = len(loader)
     for iteration, data in tqdm(enumerate(loader, 0)):
@@ -49,11 +49,14 @@ def train(epoch, tokenizer, model, device, loader, optimizer, val_loader=None, m
             logger.info(f'\nEpoch: {epoch}, Loss:  {loss.item()}, BatchesLeft: {batches_left}')
 
         if iteration % 5000 == 0:
-            model.save_pretrained(save_dir + "/iter_{}_model".format(iteration))
+            if(accelerator):
+                model.module.save_pretrained(save_dir + "/iter_{}_model".format(iteration))
+            else:
+                model.save_pretrained(save_dir + "/iter_{}_model".format(iteration))
             tokenizer.save_pretrained(save_dir + "/iter_{}_tokenizer".format(iteration))
 
         optimizer.zero_grad()
-        loss.backward()
+        accelerator.backward(loss)
         optimizer.step()
 
         if iteration % 100 == 0 and val_loader != None:
