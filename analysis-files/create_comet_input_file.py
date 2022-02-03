@@ -227,5 +227,5 @@ if __name__ == '__main__':
     # print()
     # print("length of input_list:", len(input_list))
 
-    # # create comet input file
-    # create_input_file(get_keywords(), relations)
+    # create comet input file
+    create_input_file(get_keywords(), relations)

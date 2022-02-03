@@ -1,16 +1,19 @@
 import pandas as pd
+import csv
 
 # This file maps output from Comet into NL to be used in regard + sentiment classifiers
-# NOTE: currently not used (in ConceptNet) because relations used in training are already in NL
 
 # set KG from which to use relations
 KG = 'conceptnet'
 # KG = 'atomic'
 # KG = 'wikidata'
+MODEL_SIZE = "t5base"
+OUTPUT_FILE_PATH = "/nas/home/malte/ckids-comet-atomic-2020/data/"
+INPUT_FILE = "/nas/home/malte/ckids-comet-atomic-2020/data/conceptnet_comet_t5base_output.tsv"
 
 # read predictions as dataframe
-def get_predictions(file_name):
-    return pd.read_csv(file_name, names = ['head_event', 'relation', 'tail_event'], encoding='latin-1', sep="\t")
+def get_predictions(file_path):
+    return pd.read_csv(file_path, names = ['head_event', 'relation', 'tail_event'], encoding='latin-1', sep="\t")
 
 # use same mapping as corresponding relations in ConceptNet
 def get_wikidata_mapping():
@@ -25,8 +28,38 @@ def get_wikidata_mapping():
     '/r/HasPrerequisite': 'requires '
     }
 
-# these relations and NL equivalents are taken from Nina's work
+# relations are taken from intersection of Filip's file and Nina's relations
+# NL mappings are taken from Nina's mapping
 def get_conceptnet_mapping():
+    return {'at location': 'is located at',
+    'capable of': 'is capable of',
+    'causes': 'causes',
+    'causes desire': 'causes the desire to',
+    'created by': 'is created by',
+    'defined as': 'is defined as',
+    'desires': 'desires',
+    'has a': 'has a',
+    'has first subevent': 'starts with',
+    'has last subevent': 'ends with',
+    'has prerequisite': 'requires',
+    'has property': 'has the property',
+    'has subevent': 'requires',
+    'instance of': 'is an instance of',
+    'is a': 'is a',
+    'located near': 'is located near',
+    'made of': 'is made of', 
+    'motivated by goal': 'is motivated by',
+    'not capable of': 'is not capable of',
+    'not desires': 'does not desire',
+    'not has property': 'does not have the property',
+    'part of': 'is part of',
+    'receives action': 'receives action of',
+    'related to': 'is related to',
+    'symbol of': 'is a symbol of',
+    'used for': 'is used for'}
+
+# these relations and NL equivalents are taken from Nina's work
+def get_conceptnet_mapping_old():
     return {'DefinedAs': 'is defined as ',
     'DesireOf': 'desires ',
     'HasA': 'has a ',
@@ -65,7 +98,7 @@ def get_conceptnet_mapping():
 if __name__ == '__main__':
 
     # read in predictions as dataframe
-    full_pred = get_predictions('test.tsv')
+    full_pred = get_predictions(INPUT_FILE)
 
     # obtain appropriate mapping of relation to NL
     if KG == 'conceptnet':
@@ -74,7 +107,8 @@ if __name__ == '__main__':
         mapping = get_wikidata_mapping()
 
     # write NL sentences to file
-    with open('./' + KG + '_comet_NL_output.txt', 'w+') as outfile:
+    with open(OUTPUT_FILE_PATH + KG + '_comet_' + MODEL_SIZE +'_nl_output.tsv', 'w+') as outfile:
+        tsv_writer = csv.writer(outfile, delimiter="\t")
         for index, row in full_pred.iterrows():
             relation_to_text = mapping[row['relation']]
-            outfile.write(row['head_event'] + ' ' + relation_to_text + row['tail_event'] + '\n')
+            tsv_writer.writerow([row['head_event'], relation_to_text, row['tail_event']])

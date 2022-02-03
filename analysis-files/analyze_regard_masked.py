@@ -7,11 +7,14 @@ import matplotlib
 import argparse
 import operator
 
-plot_one_relation = True
-relation_to_plot = 'used for'
-image_name = 'conceptnet_t5small_regard.png'
-image_title = 'Comet Regard (trained on T5-small and ConceptNet)'
-regard_output_file_path = '/nas/home/malte/ckids-comet-atomic-2020/nlg-bias/models/bert_regard_v2_large/conceptnet_bias_input_predictions.txt'
+# TODO: modify parameters depending on use case
+plot_one_relation = False
+# relations_to_plot = ['is used for', 'is capable of', 'receives action of', 'is not capable of']
+# relations_to_plot = ['causes the desire to', 'is motivated by', 'desires', 'does not desire']
+relations_to_plot = ['is a', 'is an instance of']
+image_name = 'wikidata_gpt2_regard_masked.png'
+image_title = 'Comet Regard (trained on GPT-2 and Wikidata-CS)'
+regard_output_file_path = '/nas/home/malte/ckids-comet-atomic-2020/nlg-bias/models/bert_regard_v2_large/wikidata_gpt2_bias_input_predictions.txt'
 
 country_metrics_dict = dict()
 religion_metrics_dict = dict()
@@ -102,7 +105,7 @@ def add_score(keyword, score, metrics_dict):
 
 # used if want to plot the results of a particular relation
 def is_desired_relation(relation):
-    if relation == relation_to_plot:
+    if relation in relations_to_plot:
         return True
     return False
 
@@ -168,57 +171,89 @@ def plotting(country_negative_box_plot,gender_negative_box_plot,relig_negative_b
 
     plt.savefig(image_name)
 
-
 if __name__ == "__main__":
 
     country_keywords = process_keywords(get_country_keywords())
     religion_keywords = process_keywords(get_relig_keywords())
     gender_keywords = process_keywords(get_gender_keywords())
     profession_keywords = process_keywords(get_profession_keywords())
-    neutral_keywords = ['this person']
+
+    # count number of times the regard score for masked sentence is different from unmasked sentence
+    count = 0
+    keyword_list = []
+    num_lines = 0
+    unique_relations = set()
 
     with open(regard_output_file_path, 'r') as file:
         lines_list = file.readlines()
-        for line in lines_list:
-            split_line = line.split('\t')
-            score = int(split_line[0])
-            keyword = split_line[1]
-            relation = split_line[2]
 
-            if plot_one_relation and is_desired_relation(relation) == False:
+        for i in range(0, len(lines_list)-1, 2):
+            line_unmasked = lines_list[i].split('\t')
+            line_masked = lines_list[i+1].split('\t')
+
+            # find score and keyword
+            keyword = line_unmasked[1]
+            relation = line_unmasked[2]
+            score_masked = int(line_masked[0])
+            score_unmasked = int(line_unmasked[0])
+
+            # plot only one relation (or group of relations)
+            if plot_one_relation == True and is_desired_relation(relation) == False:
                 continue
 
+            # recreate plot for Wikidata
+            if relation == "usedfo ":
+                continue
+            
+            # count number of lines read and unique relations
+            num_lines += 1
+            unique_relations.add(relation)
+
+            if score_masked != score_unmasked:
+                count += 1
+                keyword_list.append(keyword)
+            
+            # Associate each masked score with the corresponding keyword (so that we plot the masked score for each keyword)
             if keyword in country_keywords:
                 if keyword not in country_metrics_dict:
                     country_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
-                add_score(keyword, score, country_metrics_dict)
+                add_score(keyword, score_masked, country_metrics_dict)
             
             elif keyword in religion_keywords:
                 if keyword not in religion_metrics_dict:
                     religion_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
-                add_score(keyword, score, religion_metrics_dict)
+                add_score(keyword, score_masked, religion_metrics_dict)
             
             elif keyword in gender_keywords:
                 if keyword not in gender_metrics_dict:
                     gender_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
-                add_score(keyword, score, gender_metrics_dict)
+                add_score(keyword, score_masked, gender_metrics_dict)
             
             elif keyword in profession_keywords:
                 if keyword not in profession_metrics_dict:
                     profession_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
-                add_score(keyword, score, profession_metrics_dict)
+                add_score(keyword, score_masked, profession_metrics_dict)
             
             elif keyword in neutral_keywords:
                 if keyword not in neutral_metrics_dict:
                     neutral_metrics_dict[keyword] = {'negative_count': 0, 'neutral_count': 0, 'positive_count': 0, 'other_count': 0, 'total_count': 0}
-                add_score(keyword, score, neutral_metrics_dict)
+                add_score(keyword, score_masked, neutral_metrics_dict)
             else:
                 print("ERROR: could not find keyword:", keyword)
-    
+
+    # get data for creating box plots
     country_negative_box_plot, country_neutral_box_plot, country_positive_box_plot = get_stats(country_metrics_dict)
     gender_negative_box_plot, gender_neutral_box_plot, gender_positive_box_plot = get_stats(gender_metrics_dict)
     relig_negative_box_plot, relig_neutral_box_plot, relig_positive_box_plot = get_stats(religion_metrics_dict)
     prof_negative_box_plot, prof_neutral_box_plot, prof_positive_box_plot = get_stats(profession_metrics_dict)
 
+    # create the box plot
     plotting(country_negative_box_plot,gender_negative_box_plot,relig_negative_box_plot,prof_negative_box_plot,
             country_positive_box_plot,gender_positive_box_plot,relig_positive_box_plot,prof_positive_box_plot)
+    
+    print("Number of lines counted (exp: 5278/2):", num_lines)
+    print("Unique relations:", unique_relations)
+    print()
+    print("Number of times masked regard score does not equal unmasked score:", count)
+    print("List of keywords:")
+    print(keyword_list)

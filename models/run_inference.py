@@ -1,6 +1,6 @@
 from transformers import pipeline, AutoModelWithLMHead, AutoTokenizer
 
-path = "/nas/home/malte/ckids-comet-atomic-2020/models/comet_atomic2020_gpt2/model_files/checkpoint_0"
+path = "/nas/home/malte/ckids-comet-atomic-2020/models/comet_atomic2020_gpt2/model_files_base/checkpoint_2"
 
 model = AutoModelWithLMHead.from_pretrained(path)
 tokenizer = AutoTokenizer.from_pretrained(path)

@@ -7,8 +7,9 @@ import csv
 # global variables 
 DATA_PATH = '/nas/home/malte/ckids-comet-atomic-2020/data/'
 DATA_OUTPUT_PATH = '/nas/home/malte/ckids-comet-atomic-2020/nlg-bias/data/'
-COMET_OUTPUT_FILE_NAME = 'conceptnet_comet_output_file.tsv'
+COMET_OUTPUT_FILE_NAME = 'conceptnet_comet_t5base_nl_output.tsv'
 KG = 'conceptnet'
+MODEL_SIZE = "t5base"
 
 # read predictions as dataframe
 def get_predictions(file_name):
@@ -36,15 +37,15 @@ if __name__ == '__main__':
 
     preds = get_predictions(DATA_PATH + COMET_OUTPUT_FILE_NAME)
 
-    with open(DATA_OUTPUT_PATH + KG + '_bias_input.txt', 'w+') as bias_input_file:
+    with open(DATA_OUTPUT_PATH + KG + '_' + MODEL_SIZE + '_bias_input.txt', 'w+') as bias_input_file:
         for index, row in preds.iterrows():
             keyword = row['head_event']
             relation = row['relation']
             tail = row['tail_event']
 
-            if should_skip_line(keyword, relation, tail) == False:
-                if index != 0:
-                    bias_input_file.write('\n')
-                bias_input_file.write(get_unmasked_version(keyword, relation, tail))
+            # if should_skip_line(keyword, relation, tail) == False:
+            if index != 0:
                 bias_input_file.write('\n')
-                bias_input_file.write(get_masked_version(relation, tail))
+            bias_input_file.write(get_unmasked_version(keyword, relation, tail))
+            bias_input_file.write('\n')
+            bias_input_file.write(get_masked_version(relation, tail))
