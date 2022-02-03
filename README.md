@@ -18,9 +18,9 @@ Code is adapted and modified from the [comet-atomic-2020](https://github.com/all
 
 ## Data
 
-Knowledge Graphs: [Wikidata-CS](https://zenodo.org/record/3983030/files/wikidata-cs-20200504.tsv?download=1) and [ConceptNet](https://drive.google.com/file/d/1bhkeTjDeheLXQdRpaJk6F5uTUFTpgQW0/view)
+Knowledge Graphs: [Wikidata-CS](https://zenodo.org/record/3983030/files/wikidata-cs-20200504.tsv?download=1) and [ConceptNet](https://drive.google.com/file/d/1bhkeTjDeheLXQdRpaJk6F5uTUFTpgQW0/view).
 
-Language Models: [T5-small](https://huggingface.co/t5-small) and [T5-base](https://huggingface.co/t5-base)
+Language Models: [T5-small](https://huggingface.co/t5-small) and [T5-base](https://huggingface.co/t5-base).
 
 ## Researchers
 
