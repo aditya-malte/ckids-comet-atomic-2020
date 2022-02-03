@@ -5,7 +5,7 @@ This is the official repository associated with the project *Where Does Bias in 
 
 ## Directory Overview
 
-```analysis-files/``` in master branch: Contains code used in analysis of newly trained Comet variants.
+```analysis-files/ in master branch```: Contains code used in analysis of newly trained Comet variants.
 
 ```t5 branch```: Contains code used for training and analyzing T5 based Comet models.
 
@@ -22,7 +22,7 @@ Knowledge Graphs: [Wikidata-CS](https://zenodo.org/record/3983030/files/wikidata
 
 Language Models: [T5-small](https://huggingface.co/t5-small) and [T5-base](https://huggingface.co/t5-base)
 
-## Team
+## Researchers
 
 Students: Sara Melotte, Linglan Zhang, Aditya Malte, Namita Mutha
 
