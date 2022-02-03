@@ -1,1 +1,7 @@
-# comet-atomic-2020
+# Bias in Common Sense Knowledge Models
+
+## Directory Overview
+
+## Data
+
+## Contact
