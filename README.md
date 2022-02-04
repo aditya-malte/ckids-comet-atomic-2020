@@ -7,7 +7,7 @@ The research study was completed in fall 2021 as part of an initiative by the [C
 
 ## Directory Overview
 
-```analysis-files/ in master branch```: Contains code used in analysis of newly trained Comet variants.
+```analysis-files/ in master branch```: Contains code used to analyze bias of newly trained Comet variants.
 
 ```t5 branch```: Contains code used for training and analyzing T5 based Comet models.
 
