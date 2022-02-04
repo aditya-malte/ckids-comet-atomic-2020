@@ -1,6 +1,8 @@
 # Bias in Common Sense Knowledge Models
 
-This is the official repository associated with the project *Where Does Bias in Common Sense Knowledge Models Come From?* This research study was completed in fall 2021 as part of an initiative by the [Center for Knowledge-Powered Interdisciplinary Data Science (CKIDS)](https://sites.usc.edu/ckids/) at the Information Sciences Institute (ISI) at University of Southern California.
+This is the official repository associated with the project *Where Does Bias in Common Sense Knowledge Models Come From?* 
+
+The research study was completed in fall 2021 as part of an initiative by the [Center for Knowledge-Powered Interdisciplinary Data Science (CKIDS)](https://sites.usc.edu/ckids/) at the Information Sciences Institute (ISI) at University of Southern California.
 
 
 ## Directory Overview
